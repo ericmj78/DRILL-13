@@ -1,5 +1,6 @@
 import game_framework
 import game_world
+import item_mode
 import pause_mode
 from pico2d import *
 from boy import Boy
@@ -20,14 +21,18 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_p:
             game_framework.push_mode(pause_mode)
             return
-        else:
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_i:
+            item_mode.toggle()
+        elif not item_mode.handle_event(event, boy):
             boy.handle_event(event)
 
 
 def init():
     global boy
     game_world.clear()
+    item_mode.init()
     boy = Boy()
+    boy.set_ball_size(item_mode.selected_ball_size)
     game_world.add_oject(boy)
     grass = Grass()
     game_world.add_oject(grass, 0)
@@ -45,16 +50,19 @@ def resume():
 
 
 def update():
-    game_world.update()
+    if not item_mode.is_active():
+        game_world.update()
 
 
 def render():
     clear_canvas()
     game_world.render()
+    item_mode.draw()
     update_canvas()
 
 
 def finish():
     global boy
     game_world.clear()
+    item_mode.finish()
     boy = None
