@@ -50,8 +50,8 @@ def resume():
 
 
 def update():
-    if not item_mode.is_active():
-        game_world.update()
+    # 아이템 선택창은 오버레이이므로 선택 중에도 월드 업데이트를 계속한다.
+    game_world.update()
 
 
 def render():
@@ -66,3 +66,4 @@ def finish():
     game_world.clear()
     item_mode.finish()
     boy = None
+
