@@ -18,6 +18,7 @@ class Boy:
         self.dir = 0
         self.face_dir = 1
         self.pressed_keys = set()
+        self.ball_size = 1
 
         self.machine = Machine(
             model=self,
@@ -46,10 +47,17 @@ class Boy:
     def on_enter_RUN(self):
         self.frame = 0
 
-    def fire_ball(self):
-        ball = Ball(self.x, self.y, self.face_dir * 10)
-        game_world.add_oject(ball)
+    def set_ball_size(self, size):
+        if size in (0, 1, 2):
+            self.ball_size = size
+            return True
+        return False
 
+    def fire_ball(self):
+        if self.ball_size == 0:
+            return
+        ball = Ball(self.x, self.y, self.face_dir * 10, self.ball_size)
+        game_world.add_oject(ball)
     def handle_event(self, event):
         if (event.type == SDL_KEYDOWN and
                 event.key == SDLK_SPACE and
@@ -111,3 +119,4 @@ class Boy:
             row = 300 if self.face_dir == 1 else 200
             self.image.clip_draw(self.frame * 100, row, 100, 100,
                                  self.x, self.y)
+
